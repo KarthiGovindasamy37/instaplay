@@ -2,13 +2,15 @@ import React from 'react'
 
 function Navbar() {
 
-  let loginStatus = Boolean(window.localStorage.getItem("loginStatus"))
+  let loginStatus = JSON.parse(window.localStorage.getItem("loginStatus"))
   return (
-    <div className={`nav ${loginStatus ? `nav-flex` : null}`}>
+    <div className={`nav ${loginStatus ? `nav-flex` :``}`}>
             <div className="logo">
                 <img src='/assets/instaPlay.svg'/>
             </div>
-            <div className="search">
+            {
+              loginStatus ?
+              <div className="search">
               <div className="s-div">
               <input type="text" className='search-box' placeholder='Search movies'/>
               <div className="search-icon-div">
@@ -17,6 +19,8 @@ function Navbar() {
               </div>
               <div className="logout">Logout</div>
             </div>
+            : null
+            }
            
             
     </div>
