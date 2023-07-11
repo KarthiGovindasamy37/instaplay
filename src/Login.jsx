@@ -39,11 +39,6 @@ function Login() {
       //   }
       // }
 
-      // if (!values.userName || !values.password) {
-      //   if (!values.userName) {
-      //     setError((prev) => {...prev,userName=true});
-      //   }
-
       if (!userInput.userName && !userInput.password) {
         setUserInputError({
           ...userInputError,
