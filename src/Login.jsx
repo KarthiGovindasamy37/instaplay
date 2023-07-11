@@ -1,83 +1,155 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from './components/Navbar'
-import axios from 'axios'
-import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import Navbar from "./components/Navbar";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-    let [userName,setUserName] = useState("")
-    let [password,setPassword] = useState("")
-    let [nameAlert,setNameAlert] = useState(false)
-    let [passAlert,setPassAlert] = useState(false)
-    
-    let navigate = useNavigate()
+  // let [userName, setUserName] = useState("");
+  // let [password, setPassword] = useState("");
+  // let [nameAlert, setNameAlert] = useState(false);
+  // let [passAlert, setPassAlert] = useState(false);
+  // let [loading, setLoading] = useState(false);
 
-    useEffect(()=>{
-     if(JSON.parse(window.localStorage.getItem("loginStatus"))){
-        navigate("/home")
-     }
-    },[])
+  const [loading, setLoading] = useState(false);
 
-    const validate = async (e)=>{
-        try {
-            e.preventDefault()
-        if(userName.length > 0 && password.length > 0){
-            let tokenRes = await axios.get('https://api.themoviedb.org/3/authentication/token/new?api_key=f2eedd0ef7a8665b0ae82eb6445a77e7')
-            let token = tokenRes.data.request_token
-            window.localStorage.setItem("token",token)
-            let values = {
-                username : userName,
-                password,
-                request_token:token
-            }
-            let loginRes = await axios.post("https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=f2eedd0ef7a8665b0ae82eb6445a77e7",values)
-            let login = loginRes.data.success
-            if (login) {
-                toast.success("Logged in successfully",{toastId:Math.random()})
-                window.localStorage.setItem("loginStatus",login)
-                navigate("/home")
-            }
-            
-            
-        }else{
-            if(userName.length === 0) setNameAlert(true)
-            if(password.length === 0) setPassAlert(true)
+  const [values, setValues] = useState({
+    userName: "",
+    password: "",
+  });
+
+  const [error, setError] = useState({
+    userName: false,
+    password: false,
+  });
+
+  const navigate = useNavigate();
+
+  const validate = async (e) => {
+    console.log(e);
+    try {
+      e.preventDefault();
+      if (!values.userName || !values.password) {
+        if (!values.userName) {
+          console.log("inside");
+          setError({ ...error, userName: true });
         }
-        } catch (error) {
-            toast.error(error.response.data.status_message,{toastId:Math.random()})
+        if (!values.password) {
+          // setTimeout(() => setError({ ...error, password: true }), 1000);
+          setError({ ...error, password: true });
         }
+      }
+
+      // if (!values.userName || !values.password) {
+      //   if (!values.userName) {
+      //     setError((prev) => {...prev,userName=true});
+      //   }
+
+      // if (!values.userName && !values.password) {
+      //   console.log("name");
+      //   setError({ ...error, userName: true, password: true });
+      // } else if (!values.password) {
+      //   console.log("password");
+      //   setError({ ...error, password: true });
+      // } else if (!values.userName) {
+      //   setError({ ...error, userName: true });
+      // }
+      else {
+        setLoading(true);
+        let tokenRes = await axios.get(
+          "https://api.themoviedb.org/3/authentication/token/new?api_key=f2eedd0ef7a8665b0ae82eb6445a77e7"
+        );
+        let token = tokenRes?.data?.request_token;
+        let values = {
+          username: values.userName,
+          password: values.password,
+          request_token: token,
+        };
+        let loginRes = await axios.post(
+          "https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=f2eedd0ef7a8665b0ae82eb6445a77e7",
+          values
+        );
+
+        if (loginRes?.data?.success) {
+          toast.success("Logged in successfully", { toastId: "loginSuccess" });
+          window.localStorage.setItem("token", token);
+          setLoading(false);
+          navigate("/movies");
+        }
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.status_message, {
+        toastId: "loginError",
+      });
+      setLoading(false);
     }
+  };
 
-  return (
-    <div>
-        <Navbar/>
+  const handleChange = (e) => {
+    setValues({
+      ...values,
+      [e.target.name]: e.target.value,
+    });
+    setError({
+      ...error,
+      [e.target.name]: false,
+    });
+  };
+
+  console.log("error", values);
+
+  if (!localStorage.getItem("token")) {
+    return (
+      <div>
+        <Navbar />
         <div className="login-bg">
-            <div className="signin">
-                <p className="sign-t">Sign in</p>
-                <p className="desc-t">Sign in to your Self Service Portal</p>
-                <form onSubmit={(e) => validate(e)}>
-                    <div className={nameAlert ? `` : `form-name`}>
-                    <input type="text" id='name' className="field"
-                     placeholder='User name' 
-                     onChange={(e)=>{setUserName(e.target.value);setNameAlert(false)}}
-                    />
-                    {nameAlert ? <span className='text-alert'>User name is required</span> : null}
-                    </div>
-                    <div className={passAlert ? `pass-alert-m` : `form-pass`}>
-                    <input type="password" id='pass' className="field"
-                     placeholder='Password' 
-                     onChange={(e)=>{setPassword(e.target.value);setPassAlert(false)}}
-                     />
-                    {passAlert ? <span className='text-alert'>Password is required</span> : null}
-                    </div>
-                    <div>
-                        <input type="submit" className='submit' value="log in"/>
-                    </div>
-                </form>
-            </div>
+          <div className="signin">
+            <h1>Sign in</h1>
+            <p className="loginDesc">Sign in to your Self Service Portal</p>
+            <form onSubmit={(e) => validate(e)}>
+              <div className="formInput">
+                <input
+                  type="text"
+                  placeholder="User name"
+                  name="userName"
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
+                />
+                {error.userName && (
+                  <p className="error">User name is required</p>
+                )}
+              </div>
+              <div className="formInput">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  onChange={(e) => {
+                    handleChange(e);
+                  }}
+                />
+                {error.password && (
+                  <p className="error">Password is required</p>
+                )}
+              </div>
+              <div>
+                <input
+                  type="submit"
+                  className="submit"
+                  value={loading ? `Logging in...` : `Log in`}
+                />
+              </div>
+            </form>
+          </div>
         </div>
-    </div>
-  )
+      </div>
+    );
+  } else {
+    setTimeout(() => {
+      navigate("/movies");
+    }, 100);
+  }
 }
 
-export default Login
+export default Login;
