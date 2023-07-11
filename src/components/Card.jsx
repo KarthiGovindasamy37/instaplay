@@ -1,18 +1,23 @@
-import React from "react";
+
 import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
+import playIcon from '../Assets/playIcon.svg'
 
-function Card({ e }) {
-  const { title, poster_path, id, vote_average } = e;
+function Card({ cardDetails }) {
+
+  const rating =(avg)=>{
+    return (avg / 2).toFixed(1)
+  }
+
   return (
-    <div key={id} className="card-div">
+    <div key={cardDetails?.id} className="card-div">
       <div className="card">
         <div className="img-div">
-          <Link to={`/movie/${id}`}>
+          <Link to={`/movie/${cardDetails?.id}`}>
             <img
               src={
-                poster_path
-                  ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+                cardDetails?.poster_path
+                  ? `https://image.tmdb.org/t/p/w500/${cardDetails.poster_path}`
                   : `/assets/detailImage.png`
               }
               className="movie-img"
@@ -23,21 +28,19 @@ function Card({ e }) {
           <div className="detail-div">
             <div className="detail-w">
               <div className="tit-div">
-                <p className="title-t">{title}</p>
+                <p className="title-t">{cardDetails?.title}</p>
               </div>
               <div className="rating-div">
                 <div className="star">
                   <ReactStars
-                    count={Math.floor(vote_average / 2)}
+                    count={Math.floor(cardDetails?.vote_average / 2)}
                     edit={false}
                     color="#ffd700"
                     size={16}
                   />
                 </div>
-                {vote_average ? (
-                  <div className="rating">{`${(vote_average / 2).toFixed(
-                    1
-                  )} /  5`}</div>
+                {cardDetails?.vote_average ? (
+                  <div className="rating">{`${rating(cardDetails.vote_average)} /  5`}</div>
                 ) : (
                   ""
                 )}
@@ -45,10 +48,10 @@ function Card({ e }) {
             </div>
             <div className="play">
               <div className="play-icon">
-                <Link to={`/movie/${id}`}>
+                <Link to={`/movie/${cardDetails?.id}`}>
                   <img
-                    src="/assets/playIcon.svg"
-                    alt=""
+                    src={playIcon}
+                    alt="playIcon"
                     className="play-icon-card"
                   />
                 </Link>

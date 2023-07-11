@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
 import { toast } from "react-toastify";
-import axios from "axios";
 import ReactPaginate from "react-paginate";
+import { getSearchData, getTrendingData } from "./Services/Home";
+import Loader from "./components/Loader";
+import poster from './Assets/homePoster.svg'
 // import { useNavigate, useLocation } from 'react-router-dom'
 
 function Home() {
@@ -67,28 +69,27 @@ function Home() {
   const getDashDetails = async () => {
     try {
       setLoading(true);
-      let res = await axios.get(
-        `https://api.themoviedb.org/3/trending/movie/day?api_key=f2eedd0ef7a8665b0ae82eb6445a77e7&page=${currentPage}`
-      );
-      setMovieData(res.data);
+
+      const trendingRes = await getTrendingData(currentPage)
+       
+      setMovieData(trendingRes?.data)
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message,{toastId:"trendingError"});
     }
   };
 
   const getSearchResults = async () => {
     try {
       setLoading(true);
-      let res = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=f2eedd0ef7a8665b0ae82eb6445a77e7&language=en-US&query=${search}&page=${searchCurrentPage}&include_adult=false`
-      );
-      setSearchResults(res.data);
+      const searchRes = await getSearchData(search,searchCurrentPage)
+
+      setSearchResults(searchRes?.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message,{toastId:"searchError"});
     }
   };
 
@@ -109,21 +110,19 @@ function Home() {
         setSearch={setSearch}
         setSearchCurrentPage={setSearchCurrentPage}
       />
-      <div className="class">
+      <div className="posterWrapper">
         <div className="poster">
-          <img src="/assets/homePoster.svg" className="poster-img" />
+          <img src={poster}alt="poster" className="poster-img" />
         </div>
         <div className="home-bg">
           <p className="trending-t">
-            {search.length === 0 ? "Trending" : `Search movies for "${search}"`}
+            {!search.length  ? "Trending" : `Search movies for "${search}"`}
           </p>
           {loading ? (
-            <div className="loading">
-              <img src="/assets/ZZ5H.gif" alt="" className="loading-img" />
-            </div>
+            <Loader/>
           ) : (
             <div className="trending-page">
-              {search.length > 0 ? (
+              {search?.length  ? (
                 <>
                   {searchResults?.results?.length === 0 ? (
                     <div className="noResults">
@@ -164,8 +163,8 @@ function Home() {
                 </>
               ) : (
                 <>
-                  {movieData?.results?.map((e, i) => {
-                    return <Card e={e} key={i} currentPage={currentPage} />;
+                  {movieData?.results?.map((movie, i) => {
+                    return <Card cardDetails={movie} key={i} currentPage={currentPage} />;
                   })}
                   <div className="pagination-div">
                     {movieData?.total_results ? (

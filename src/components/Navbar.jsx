@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import logo from '../Assets/instaPlay.svg'
+import searchIcon from '../Assets/searchIcon.svg'
 
 function Navbar({ setSearch, setSearchCurrentPage, search }) {
   const loginStatus = localStorage.getItem("token");
@@ -20,10 +22,10 @@ function Navbar({ setSearch, setSearchCurrentPage, search }) {
   };
 
   return (
-    <div className={`nav ${loginStatus ? `nav-flex` : ``}`}>
+    <div className="nav-flex">
       <div className="logo">
         <img
-          src="/assets/instaPlay.svg"
+          src={logo}
           onClick={() => navigate("/movies")}
           className="logoImg"
         />
@@ -41,14 +43,14 @@ function Navbar({ setSearch, setSearchCurrentPage, search }) {
               placeholder="Search movies"
             />
             <div className="search-icon-div">
-              <img src="/assets/searchIcon.svg" className="search-icon" />
+              <img src={searchIcon} className="search-icon" />
             </div>
           </div>
           <div className="logout" onClick={logout}>
             Logout
           </div>
         </div>
-      ) : null}
+      ) : ""}
     </div>
   );
 }

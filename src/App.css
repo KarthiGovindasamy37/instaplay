@@ -7,11 +7,7 @@
 body {
   font-family: Poppins;
 }
-.nav {
-  min-height: 70px;
-  background-color: #263f61;
-  padding-right: 50px;
-}
+
 .logo {
   padding-top: 12px;
   padding-left: 56px;
@@ -119,6 +115,9 @@ input:focus {
   border: 1px solid #ff7d65;
 }
 .nav-flex {
+  min-height: 70px;
+  background-color: #263f61;
+  padding-right: 50px;
   display: flex;
   justify-content: space-between;
   width: 100vw;
@@ -170,14 +169,13 @@ input:focus {
 @media only screen and (max-width: 576px) {
   .nav-flex {
     display: block;
-  }
-  .nav {
     min-height: 70px;
-    background-color: #263f61;
-    padding: 60px 20px 5px 20px;
-    position: fixed;
-    top: 0;
-    overflow: hidden;
+  background-color: #263f61;
+  padding: 60px 20px 5px 20px;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  z-index: 1;
   }
   .logo {
     padding: 0;
@@ -273,8 +271,9 @@ input:focus {
   object-fit: cover;
   width: 100%;
 }
-.class {
+.posterWrapper {
   width: 100vw;
+  background-color: #0c111b;
 }
 .home-bg {
   width: 100%;
@@ -306,9 +305,7 @@ input:focus {
   background: linear-gradient(0deg, #1a2b4a 0%, #2b507c 100%);
   min-height: 65px;
 }
-.class {
-  background-color: #0c111b;
-}
+
 .img-div {
   overflow: hidden;
   position: relative;
@@ -379,14 +376,21 @@ input:focus {
   .card-div {
     width: 50%;
   }
-  .nav {
+  .nav-flex{
+    display: block;
     min-height: 70px;
     background-color: #263f61;
-    padding-right: 30px;
+    padding: 60px 20px 5px 20px;
     position: fixed;
     top: 0;
     overflow: hidden;
     width: 100vw;
+  }
+  .logo {
+    padding-top: 12px;
+    padding-left: 0;
+    color: white;
+    font-size: large;
   }
   .trending-t {
     color: #fff;

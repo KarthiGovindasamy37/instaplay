@@ -1,12 +1,9 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import closeIcon from '../Assets/closeIcon.svg'
 
-const Modal = ({ showModal, setShowModal, videoKey }) => {
+const Modal = ({  setShowModal, videoKey }) => {
   return (
     <>
-      {showModal ? (
-        <div style={{ color: "white" }} className="modal">
+        <div className="modal">
           <div className="modal-view-div">
             <iframe
               src={`https://www.youtube.com/embed/${videoKey}`}
@@ -18,7 +15,7 @@ const Modal = ({ showModal, setShowModal, videoKey }) => {
             ></iframe>
             <div className="close">
               <img
-                src="/assets/closeIcon.svg"
+                src={closeIcon}
                 alt=""
                 className="close-icon"
                 onClick={() => setShowModal(false)}
@@ -26,9 +23,6 @@ const Modal = ({ showModal, setShowModal, videoKey }) => {
             </div>
           </div>
         </div>
-      ) : (
-        ""
-      )}
     </>
   );
 };
